@@ -1,0 +1,87 @@
+//MARK: using 
+struct ExampleView: View {
+
+    @State private var isExpand = false
+    
+    var body: some View {
+        ZStack { 
+                ExpanedView(expanedContent: {expandedTopView},
+                            foldedContent: {foldedTopView},
+                            isExpanded: $isExpand)
+                .appCornerRadius(25, corners: [.bottomLeft, .bottomRight])
+                .shadow(color: Color.theme.primary.opacity(0.2), radius: 5, x: 0, y: 2)
+    }
+    }
+}
+
+//MARK: - Expanded view
+extension ExampleView {
+    private var seeMoreButtonTopview : some View {
+        AppButton(state: .constant(.normal), style: .plain) {
+            withAnimation {
+                self.isExpand.toggle()
+            }
+        } builder: {
+            VStack{
+                Text(self.isExpand ? "See less" : "See more")
+                    .appFont(.caption)
+                Image(self.isExpand ? "dropUpNew" : "dropdownNew")
+            }
+        }
+    }
+    private struct ItemRow: View {
+        let imageName: String
+        let title: String
+        
+        var body: some View {
+            HStack {
+                Image(imageName)
+                    .background(
+                        Circle()
+                            .fill(Color.theme.bgWhite)
+                            .frame(width: 30, height: 30)
+                    )
+                Text(title)
+                    .appFont(.footnote)
+            }
+        }
+    }
+    var foldedTopView : some View {
+        VStack {
+            VStack(alignment:.leading , spacing: 20 ){
+                Text("Al-Dawaa clinics")
+                    .appFont(.headline)
+                    .foregroundColor(.theme.primary)
+                
+                Text("Our pharmacists are ready to help you with your medication needs.")
+                    .appFont(.subheadline)
+            }
+            .padding()
+            seeMoreButtonTopview
+        }.frame(width: UIScreen.main.bounds.width)
+    }
+    var expandedTopView : some View{
+        VStack{
+            VStack(alignment:.leading , spacing: 20 ){
+                Text("Al-Dawaa clinics")
+                    .appFont(.headline)
+                    .foregroundColor(.theme.primary)
+                Text("Our pharmasists are ready to help you about your medication needs. Get your tests done and have your medication right after.")
+                    .appFont(.subheadline)
+            }
+            .padding()
+            HStack(spacing: UIScreen.main.bounds.width*0.25){
+                VStack(alignment: .leading,spacing: 20){
+                    ItemRow(imageName: "ok", title: "Quick check up")
+                    ItemRow(imageName: "ok", title: "BMI")
+                }
+                VStack(alignment: .leading,spacing: 20){
+                    ItemRow(imageName: "ok", title: "Quick digital health check")
+                    ItemRow(imageName: "ok", title: "Blood pressure")
+                }
+            }
+            .padding()
+            seeMoreButtonTopview
+        }.frame(width: UIScreen.main.bounds.width)
+    }
+}
